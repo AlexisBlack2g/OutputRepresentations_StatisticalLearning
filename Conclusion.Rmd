@@ -1,0 +1,98 @@
+
+#General Discussion  
+We are interested in the processes underlying statistical learning, specifically, the nature of the learning mechanisms involved. In this paper, we examined whether learners' emergent representations reflect the underlying transitional probability structure, or if they reflect chunked material, in a standard SL experiment. We contrasted participants' preference for words, part-words, and initial, medial, and final syllable manipulated fake-words. If participants base their decisions on relative TP strength between syllables (as predicted by the TP-encoding account), we expect that performance should incrementally decrease as the comparison between TPs narrows. In other words, we expect that proportion choice and reaction times should be ordered hierarchically as follows: Words vs Medial Fake-words  > 
+Words vs Initial/Final Fake-words > 
+Words vs Part-words > 
+Part-words vs Medial Fake-words > 
+Part-words vs Initial/Final Fake-words. Further, given that we analyzed the data such that proportion choice always reflects choice of the higher TP item, we predict 'above-chance' performance on all these contrasts, and positive correlations between performance on the different trial types. Alternatively, participants may base their decisions on whether trisyllables reflect the positional characteristics of syllables within words. In this case, we predict performance to be ordered as follows: Words vs Part-words > 
+Words vs Fake-words > 
+Part-words vs Fake-words. In contrast to the TP-encoding case, we further predict below-chance performance on part-word versus fake-word contrasts, and negative correlations between performance on word versus part-word and part-word versus fake-word trial types under position-encoding.  
+In the first experiment presented in this paper, native-English speaking participants were exposed to familiar English sounds. In the second and third, native-English speaking participants were exposed to progressively less familiar sounds. This was in response to a claim that perceptual familiarity moderates the course of learning, and may serve to highlight chunk-like features in emergent representations that are obscured by more proficient levels of learning (Perruchet and Poulin-Charronat, 2012).  
+Across all three studies, participants demonstrated successful segmentation of the input stream, as indicated by above chance performance on word versus part-word trials. Participants' best performance, however, was consistently on word versus medial fake-word trials, that is, on trials that pitted a perfect TP trisyllable sequence against a trisyllabic sequence of two adjacent TPs of zero. This pattern is consistent with the TP-encoding account, which predicts that the easiest/most discriminable contrasts should be words versus medial fake-words. On the other hand, all three experiments evidenced some relative decrement in performance for trials pitting fake-words against words in comparison to word versus part-word trials. Performance on word versus final fake-word trials was consistently numerically poorer than either word versus part-word or word versus medial fake-word trials, and, although not significant in any individual experiment, all three experiments consistently yielded longer RTs for word versus fake-word trial types in comparison to word versus part-word trials. Additionally, in the non-English language task (Experiment 2b), participants only successfully discriminated words from part-words and medial fake-words; performance on word versus initial and final syllable fake-words did not significantly differ from chance. Taken together, these patterns of performance suggest that learners find edge-based fake-words more difficult to distinguish from their word counterparts than they do part-words and medial syllable fake-words. This is suggestive of the involvement of chunk-like knowledge.       
+The contrast/trial type where the two accounts make the most distinct predictions is part-words versus fake-words. Under the TP-encoding account, participants should prefer part-words; under the position-encoding account, they should prefer fake-words. Over the three experiments, however, performance did not differ from chance in any of the part-word from fake-word trials. This is difficult to interpret. Nevertheless, there were three patterns in the part-word versus fake-word trials that are more consistent with the position-encoding account than the TP-encoding account. Firstly, in all three experiments, participants chose initial-syllable fake-words numerically more often than part-words, and at similar rates (Cohen's *d* range from -.22 to -.29). Secondly, in both Experiment 1 and Experiment 2a (the semi-English language), participants also numerically preferred final syllable fake-words over part-words. And finally, there are relevant correlations between performance on the different trial types. As previously noted, if learners are using syllable positionality for recognition of the trisyllable sequences, we should find negative correlations between performance on the word versus part-word (control comparison for segmentation performance) and part-word versus fake-word trials, which we did. In Experiments 1 and 2a, strength of preference for final syllable fake-words over part-words was significantly correlated with segmentation performance. Across all three experiments, strength of preference for initial syllable fake-words was (non-significantly) correlated with segmentation performance. And more generally, there was a spread of negative correlations between part-word versus fake-word trials and all trials involving words across all three studies.  
+We also asked whether there is an effect of perceptual familiarity on the segmentation process. We ran experiments 2a and b under the assumption, based on previous studies, that a decrease in perceptual familiarity would interfere with learning in a particular way; specifically, that it would lead to increased chunk-like representations. The results from Experiment 2a are consistent with this hypothesis. Specifically, negative correlations in the predicted directions were strengthened (in comparison to Experiment 1) across the matrix, and there was a larger difference between trials involving edge-manipulated fake-words and non edge-manipulated fake-words. A further decrease in perceptual familiarity in Experiment 2b, however, appears to have impaired learning to such a degree that learners had not learned sufficiently well to show much consistency over trials. It is interesting to note, however, that, despite this decrease in overall performance, participants performed significantly above chance on word versus medial fake-word trials and word versus part-word trials - but not word versus edge-based fake-word trials. Again, this pattern of performance is more consistent with the idea that learners are affected by positional knowledge of syllables.  
+
+```{r echo = FALSE, include = FALSE}
+nel$Lang <- "NEL"
+sel$Lang <- "SEL"
+fam$Lang <- "EL"
+
+all2 <- full_join(fam, sel)
+all2 <- full_join(all2, nel)
+```
+
+```{r, echo = FALSE, include = FALSE}
+bigM_ts <- dfTs(all2)
+
+bigM <- glmer(ACC ~ PairCode + Lang + c_Trial + (1 | SubjectID), data = all2, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", 
+                                         optCtrl=list(maxfun=2e6)))
+bigMglht <- glht(bigM, linfct=mcp(PairCode = "Tukey"))
+
+big_RT <- all2 %>% filter(RT < 5000) %>% group_by(SubjectID, PairCode) %>% summarise(RT = mean(RT)) %>% group_by(PairCode) %>% summarise(`Mean RT` = mean(RT), SD = sd(RT))
+
+bigM_RT <- lmer(RT ~ PairCode + Lang + c_Trial + (1 | SubjectID), 
+                data = subset(all2, RT < 5000))
+bigM_RTglht <- glht(bigM_RT, linfct=mcp(PairCode = "Tukey"))
+
+big_Wide <- WideDF(all2)
+big_cors <- rcorr(as.matrix(big_Wide[,c(2:8)]), type = "spearman")
+big_M <- big_cors$r
+big_p <- big_cors$P
+```
+Though there are perceptual differences across the three experiments, the design is identical, which allows us to run the same analyses over the entire dataset. Collapsing across the experiments, we first examine proportion choice of higher TP item by trial type in comparison to chance (all reported *p* values bonferroni-adjusted for multiple comparisons). Performance is significantly above chance for all trials pitting a part-word or fake-word foil against words (see Table 9). Performance on part-word versus initial fake-word trials is significantly below chance (M = `r bigM_ts$Mean[5]`, *p* = `r bigM_ts$p[5]`, *d* = `r bigM_ts$"Cohen's d"[5]`), while proportion choice of part-words or fake-words did not differ from chance in the medial and final fake-word trial types. Although ideally we would be able to examine the interaction of experiment, trial, and trial type, the complexity of such a model would leave it nearly uninterpretable. We opted instead to run a simpler mixed effects model, by introducing trial type, trial and experiment as fixed simple factors, and including random intercepts by subject. Model results are reported in Table 10. As expected, the model reveals a significant decrease in part-word versus fake-word trials in comparison to the reference level, word versus part-word trials. The model also reveals a significant decrease in intercept for the semi-English language, and a larger decrease for the non-English language. Reaction time differences are also telling: while there is no significant difference in RT between word versus part-word trials and all part-word versus fake-word trials, RTs to word versus initial fake-word trials are significantly slower compared to word versus part-word and all part-word versus fake-word trials (from multiple comparison analysis; see Appendix E). Finally, the correlations stabilize as expected: word versus part-word trials negatively correlated with part-word versus initial (*rs* = `r big_M[5,1]`, *p* = `r big_p[7,1]`) and part-word versus final fake-word trials (*rs* = `r big_M[7,1]`, *p* = `r big_p[5,1]`). Performance on part-word versus final fake-word trials is also negatively correlated with word versus initial fake-words (*rs* = `r big_M[7,2]`, *p* = `r big_p[7,2]`). The full correlation matrix can be found in Appendix E. These results, which highlight that word versus (some) fake-word trial types are harder than word versus part-words, and that (some) fake-words are preferred over part-words, are consistent with the position-encoding account.
+
+```{r results = "asis", echo = FALSE}
+apa_table(bigM_ts, 
+          caption = "Proportion choice means and significance test comparisons to chance, collapsing across experiment")
+```
+
+
+```{r, results = "asis", echo = FALSE}
+#Create table for model results
+cc <- confint(bigM, parm = "beta_", method = "Wald")  
+p <- format.pval(round(summary(bigM)$coefficients[,4], digits = 2), eps = .001)
+ctab <- cbind(est = round(fixef(bigM), digits = 2), cc)
+rtab <- exp(ctab)
+rtab <- cbind(rtab, p)
+`Fixed Effect` <- c("Intercept",
+                    "Word vs Initial FW",
+                    "Word vs Medial FW",
+                    "Word vs Final FW",
+                    "PW vs Initial FW",
+                    "PW vs Medial FW",
+                    "PW vs Final FW",
+                    "Exp 2b: Non-English language",
+                    "Exp 2a: Semi-English Language",
+                    "Trial")
+
+rtab <- cbind(rtab, `Fixed Effect`)
+rtab <- as.data.frame(rtab)
+
+rtab <- rtab[c(1:7,10,8:9),c(5,1:4)]
+
+rtab <- 
+  rtab %>% 
+  mutate(est = round(as.numeric(as.character(est)),digits = 2),
+         `2.5 %` = round(as.numeric(as.character(`2.5 %`)),digits = 2),
+         `97.5 %` = round(as.numeric(as.character(`97.5 %`)),digits = 2))%>% 
+  rename(`Odds Ratio` = est,
+         `Lower 95% CI` = `2.5 %`,
+         `Upper 95% CI` = `97.5 %`,
+         `p value` = p) 
+
+apa_table(rtab,
+          caption = "Mixed effects model results predicting proportion choice, Combined")
+```
+
+```{r results = "asis", echo = FALSE}
+apa_table(big_RT, 
+          caption = "RT means and standard deviations, collapsing across experiment")
+```
+
+Thus far, we have been discussing our data as if it is clear that performance at test reflects learning that has taken place during exposure, that is, prior to testing. This more or less unspoken assumption in most studies of SL (though see, e.g., Batterink and Paller, 2017 for a recent discussion of this issue) is especially relevant to participants' knowledge of syllable position, something that could emerge during repeated exposure to word forms at testing and so not during exposure to the continuous stream of speech. It is possible that learners have not encoded anything about the relative positions of syllables during familiarization, but that they quickly do so at test. At test, each trisyllable is played flanked by silence, and these are exactly the conditions in which learners have been shown to rapidly infer positional information (e.g., Peña et al., 2002). The trials, of course, are counter-balanced; participants hear both non-positional foils (part-words) in addition to positionally faithful sequences. But it is possible that because learners recognize the perfect TP sequences as the best options, they are preferentially driven to encode the positional information of those sequences as opposed to the part-word foils. We have tried to account for this possibility by examining the effect of trial on every trial type. In most cases, we found little evidence for change in participant performance; however, it may be that it only takes one or two instances of hearing a word in isolation to entrain something about the positionality of the syllables, in which case any change over the course of the experiment would happen too quickly to be detectable in the models. We think that this is unlikely to be the source of position-based knowledge evidenced by the participants in our study, but acknowledge this is an area for future research.  
+It is interesting to ask why learning that takes place over continuous information appears to differ from learning that takes place over bracketed information. One crucial difference may have to do with memory interference - without the bracket provided by a pause or lengthened syllable, the system is continually laying down and searching for new edges, but simultaneously suffering because pre-existing memory traces are overwritten. This makes a specific prediction - learners that are tested after a delay may have experienced consolidation of their memory traces, allowing for more chunk-like and larger representations. We have some evidence that speaks to this. We ran several small, exploratory extensions of the non-English language condition (a 4-min, 8-min, and 2-day exposure lengths). We will ignore the 4-min and 8-min conditions, as they involve continuous presentation of the stimuli, and therefore do not address the central proposal. In the 2-day condition, however, participants were exposed to 2-minutes of exposure on day one, followed by 2-min of exposure on day 2. Testing occurred only on day 2. The sample was smaller (*n* = 17), so we have not presented the study in its entirety here. However, we can say that learning was not much improved; performance did not differ from chance in any condition. Interestingly, however, participants did numerically choose final fake-words over part-words (Mean = .39, uncorrected *p* = .019, corrected *p* = .13, *d* = -.63; modal performance = .25; median = .38). In other words, though consolidation of memory traces after sleep did not appear to boost knowledge of the trisyllable words or the TP strength between syllables, there is a suggestion that learners' representations of final syllable positions was strengthened.     
+If we assume that the evidence in favor of position-based encoding is not a result of learning from the test period, then how should we interpret our results with respect to the underlying question: what is the mechanism learners rely on to segment a continuous stream of speech? Our data are consistent with a few different possibilities. First, it may be that learners chunk adjacent syllables and slowly build up larger representations. This would lead to best performance on word versus medial fake-word trial types, but could also result in the kind of position-based knowledge we have sought here. Second, it may be that learners track TPs, but that there is a threshold that differentiates certain sequences with relatively high TPs versus those with relatively low TPs. This could also result in position-based encoding. Finally, it is also possible that both chunking and TP-tracking interact with one another. Deciding between these different possibilities is beyond the scope of this work, as our study was only designed to look for evidence of position-based encoding (or not). But these are interesting possibilities for future research. 
+In sum, the data presented here suggest that the process of learning involves a process beyond merely tracking adjacent transitional probabilities. Furthermore, we have shown that manipulating the perceptual familiarity of the signal impacts learning, and that we can use that modulation as a tool to better understand the nature of the learned representations, which in turn can serve to illuminate the learning mechanism itself. While we argue that this approach has yielded some insight, we also acknowledge that the standard SL paradigm, as we have employed here, introduces confounds to the learning outcomes that can be difficult to separate from the statistical learning process under investigation.  
+
+\newpage

@@ -1,0 +1,189 @@
+
+##Experiment 2b
+
+```{r}
+#Create table for model results
+cc_NEL <- confint(model_NEL, parm = "beta_", method = "Wald")  
+p_NEL <- format.pval(round(summary(model_NEL)$coefficients[,4], digits = 2), eps = .001)
+ctab_NEL <- cbind(est = round(fixef(model_NEL), digits = 2), cc_NEL)
+rtab_NEL <- exp(ctab_NEL)
+rtab_NEL <- cbind(rtab_NEL, p_NEL)
+`Fixed Effect` <- c("Intercept",
+                    "Word vs Initial FW",
+                    "Word vs Medial FW",
+                    "Word vs Final FW",
+                    "PW vs Initial FW",
+                    "PW vs Medial FW",
+                    "PW vs Final FW",
+                    "Trial",
+                    "Target Location [2]",
+                    "Trial x Word vs Initial FW",
+                    "Trial x Word vs Medial FW",
+                    "Trial x Word vs Final FW",
+                    "Trial x PW vs Initial FW",
+                    "Trial x PW vs Medial FW",
+                    "Trial x PW vs Final FW")
+
+rtab_NEL <- cbind(rtab_NEL, `Fixed Effect`)
+rtab_NEL <- as.data.frame(rtab_NEL)
+
+rtab_NEL <- rtab_NEL[c(1:7,9,8,10:15),c(5,1:4)]
+
+rtab_NEL <- 
+  rtab_NEL %>% 
+  mutate(est = round(as.numeric(as.character(est)),digits = 2),
+         `2.5 %` = round(as.numeric(as.character(`2.5 %`)),digits = 2),
+         `97.5 %` = round(as.numeric(as.character(`97.5 %`)),digits = 2))%>% 
+  rename(`Odds Ratio` = est,
+         `Lower 95% CI` = `2.5 %`,
+         `Upper 95% CI` = `97.5 %`,
+         `p value` = p_NEL) 
+```
+
+
+```{r, results = "asis", include = TRUE, out.width = "\\textwidth", fig.pos = "!h"}
+apa_table(rtab_NEL,
+          caption = "Mixed effects model results Experiment 1")
+```
+
+```{r echo = FALSE}
+contrastsNEL <- as.data.frame(table_glht(model_NEL_mcp))
+contrastsNEL <- cbind(rownames(contrastsNEL), data.frame(contrastsNEL, row.names=NULL))
+contrastsNEL <- contrastsNEL %>% 
+  separate("rownames(contrastsNEL)", c("`Contrast trial type`", "`Trial type`"), sep = " - ") %>%
+  dplyr::select(c("`Trial type`", "`Contrast trial type`":"Pr...z.."), 
+                `Mean difference` = Estimate,
+                `Std. error` = Std..Error,
+                `p value` = Pr...z..)
+`Trial type` <- c("Word vs PW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs In FW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Med FW",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Fin FW",
+                  "~",
+                  "~",
+                  "PW vs In FW",
+                  "~",
+                  "PW vs Med FW")
+
+contrastsNEL <- dplyr::select(contrastsNEL, c("`Contrast trial type`":"p value"))
+contrastsNEL <- cbind(`Trial type`, contrastsNEL)
+round(contrastsNEL$`p value`, digits = 3) -> contrastsNEL$`p value`
+contrastsNEL$`p value` <- format.pval(contrastsNEL$`p value`, eps = .001)
+```
+
+```{r results="asis", echo = FALSE, include = TRUE, out.width = "\\textwidth", fig.pos = "!h"}
+apa_table(contrastsNEL,
+          caption = "Multiple comparisons of mixed effects model results for RT, Experiment 2b",
+          row.names = FALSE)
+```
+
+
+```{r echo = FALSE}
+nel_rt_means <- nel_RT %>% group_by(SubjectID, PairCode) %>% summarise(RT = mean(RT)) %>% group_by(PairCode) %>% summarise(Mean = mean(RT), SD = sd(RT)) %>% mutate(PairCode = factor(PairCode, labels = c("Word vs PW","Word vs Initial FW","Word vs Medial FW", "Word vs Final FW", "PW vs Initial FW", "PW vs Medial FW", "PW vs Final FW")))
+```
+
+```{r results = "asis", echo = FALSE, include = TRUE, out.width = "\\textwidth", fig.pos = "!h"}
+apa_table(nel_rt_means,
+          caption = "Means and standard deviations for RT, Experiment 2b")
+```
+
+
+```{r echo = FALSE}
+x <- coef(summary(model_NEL_RT))
+`Fixed Effect` <- c("Intercept",
+                    "Word vs Initial FW",
+                    "Word vs Medial FW",
+                    "Word vs Final FW",
+                    "PW vs Initial FW",
+                    "PW vs Medial FW",
+                    "PW vs Final FW",
+                    "Trial",
+                    "Target Location [2]",
+                    "Trial x Word vs Initial FW",
+                    "Trial x Word vs Medial FW",
+                    "Trial x Word vs Final FW",
+                    "Trial x PW vs Initial FW",
+                    "Trial x PW vs Medial FW",
+                    "Trial x PW vs Final FW")
+x <- cbind(x, `Fixed Effect`)
+rownames(x) <- NULL
+x <- x[,c(6,1:5)]
+x <- as.data.frame(x)
+x <- 
+  x %>% 
+  mutate(`Pr(>|t|)` = format.pval(round(as.numeric(as.character(`Pr(>|t|)`)), digits = 2), eps = .001),
+         Estimate = round(as.numeric(as.character(Estimate)),digits = 2),
+         `t value` = round(as.numeric(as.character(`t value`)),digits = 2),
+         `Std. Error` = round(as.numeric(as.character(`Std. Error`)),digits = 2),
+         df = round(as.numeric(as.character(df)),digits = 2)) %>% 
+  rename(`p value` = `Pr(>|t|)`) 
+```
+
+
+```{r results="asis", echo = FALSE, include = TRUE, out.width = "\\textwidth", fig.pos = "!h"}
+apa_table(x,
+          caption = "Mixed effects model results predicting RT, Experiment 2a")
+```
+
+
+```{r echo = FALSE}
+contrastsNEL_RT <- as.data.frame(contrastsNEL_RT)
+contrastsNEL_RT <- cbind(rownames(contrastsNEL_RT), data.frame(contrastsNEL_RT, row.names=NULL))
+contrastsNEL_RT <- contrastsNEL_RT %>% 
+  separate("rownames(contrastsNEL_RT)", c("`Contrast trial type`", "`Trial type`"), sep = " - ") %>%
+  dplyr::select(c("`Trial type`", "`Contrast trial type`":"Pr...z.."), 
+                `Mean difference` = Estimate,
+                `Std. error` = Std..Error,
+                `p value` = Pr...z..)
+`Trial type` <- c("Word vs PW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs In FW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Med FW",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Fin FW",
+                  "~",
+                  "~",
+                  "PW vs In FW",
+                  "~",
+                  "PW vs Med FW")
+
+contrastsNEL_RT <- dplyr::select(contrastsNEL_RT, c("`Contrast trial type`":"p value"))
+contrastsNEL_RT <- cbind(`Trial type`, contrastsNEL_RT)
+round(contrastsNEL_RT$`p value`, digits = 3) -> contrastsNEL_RT$`p value`
+contrastsNEL_RT$`p value` <- format.pval(contrastsNEL_RT$`p value`, eps = .001)
+```
+
+
+
+```{r results="asis", echo = FALSE, include = TRUE, out.width = "\\textwidth", fig.pos = "!h"}
+apa_table(contrastsNEL_RT,
+          caption = "Multiple comparisons of mixed effects model results for RT, Experiment 2a",
+          row.names = FALSE)
+```
+
+
+```{r, fig.cap = "Correlation matrix for Experiment 2b", out.width = "\\textwidth", fig.pos = "!h"}
+ggcorrplot(M_NEL, type = "lower", lab = TRUE) + theme_manuscript + theme(axis.text.y = element_text(colour = "black"))
+```

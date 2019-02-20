@@ -1,0 +1,51 @@
+
+##General Discussion
+
+```{r}
+contrastsbigM_RT <- as.data.frame(table_glht(bigM_RTglht))
+contrastsbigM_RT <- cbind(rownames(contrastsbigM_RT), data.frame(contrastsbigM_RT, row.names=NULL))
+contrastsbigM_RT <- contrastsbigM_RT %>% 
+  separate("rownames(contrastsbigM_RT)", c("Contrast trial type", "Trial type"), sep = " - ") %>%
+  dplyr::select(c("Trial type", "Contrast trial type":"Pr...z.."), 
+                `Mean difference` = Estimate,
+                `Std. error` = Std..Error,
+                `p value` = Pr...z..)
+`Trial type` <- c("Word vs PW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs In FW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Med FW",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Fin FW",
+                  "~",
+                  "~",
+                  "PW vs In FW",
+                  "~",
+                  "PW vs Med FW")
+
+contrastsbigM_RT <- dplyr::select(contrastsbigM_RT, c("Contrast trial type":"p value"))
+contrastsbigM_RT <- cbind(`Trial type`, contrastsbigM_RT)
+round(contrastsbigM_RT$`p value`, digits = 3) -> contrastsbigM_RT$`p value`
+contrastsbigM_RT$`p value` <- format.pval(contrastsbigM_RT$`p value`, eps = .001)
+```
+
+
+```{r, results = "asis", echo = FALSE, out.width = "\\textwidth", fig.pos = "!h"}
+apa_table(contrastsbigM_RT,
+          caption = "Multiple comparisons from mixed effects model collapsed across all data")
+```
+
+
+```{r, out.width = "\\textwidth", fig.pos = "!h", fig.cap = "Correlation matrix across all data"}
+ggcorrplot(big_M, lab = TRUE, type = "lower") + theme_manuscript + theme(axis.text.y = element_text(colour = "black"))
+```
+

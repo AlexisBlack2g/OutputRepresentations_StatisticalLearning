@@ -1,0 +1,91 @@
+```{r, include = FALSE}
+nel <- read.csv("nel.csv")
+
+nel$PairCode = factor(nel$PairCode, levels = c("Word vs PW", "Word vs In FW", "Word vs Med FW",
+                                            "Word vs Fin FW", "PW vs In FW", "PW vs Med FW",
+                                            "PW vs Fin FW"))
+```
+
+#Experiment 2b
+##Methods
+###Participants.
+Forty-one adult native-speakers of English were recruited through the University of British Columbia Psychology Department’s paid participants listserv (22), or the Linguistic Department’s subject pool (20). Participants through the Psychology Department listserv were paid $10; participants through the Linguistic Department’s subject pool received course credit or $5.  Two participants were excluded because they were first exposed to English after the age of 3 and 1 participant was excluded for failure to follow instructions. The final sample thus consisted of data from 38 participants (30 female; ages 17 to 25 years).
+
+###Materials.
+Twelve new syllables containing unfamiliar sounds were created for the non-English language stimuli. We did this by modifying sounds or classes of sounds. For instance, the place of articulation was changed for two of the three consonants (i.e., alveolar to palatal, and velar to uvular), and the two obstruent manners of articulation were changed (short-lag to implosive, and aspirated to ejective). The vowel system was changed so that rounding – which characterizes high and mid back vowels in English – characterized the non-high vowels instead. The full inventory can be found in Figure 6. Syllables were produced and manipulated in the same way as the materials in Experiments 1 and 2a.
+
+###Procedure
+The procedure was the same as in Experiments 1 and 2a.
+
+#Results
+```{r, include = FALSE}
+nel_ts <- dfTs(nel)
+
+#model_NEL <- glmer(ACC ~ PairCode * c_Trial + CRESP + (c_Trial + CRESP | SubjectID) + (1 | #List2), 
+#                  data = nel, family = binomial, 
+#                  control = glmerControl(optimizer = "bobyqa", 
+#                                         optCtrl=list(maxfun=2e6)))
+
+model_NEL <- glmer(ACC ~ PairCode * c_Trial + CRESP + (0 + c_Trial | SubjectID) + (1 | List2), 
+                  data = nel, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", 
+                                         optCtrl=list(maxfun=2e6)))
+
+model_NEL_mcp <- glht(model_NEL, linfct=mcp(PairCode = "Tukey"))
+
+contrastsNEL <- table_glht(model_NEL_mcp)
+```
+Participants successfully distinguished words from partwords (M = `r nel_ts$Mean[1]`, SD = `r nel_ts$SD[1]`, 95% CI = `r nel_ts$"95% Conf int"[1]`, *t*(41) = `r nel_ts$"T value"[1]`, *p* = `r nel_ts$p[1]`, *d* = `r nel_ts$"Cohen's d"[1]`). Unlike in Experiments 1 and 2a, however, participants failed to distinguish words from initial and final fake-words (M = `r nel_ts$Mean[2]` and `r nel_ts$Mean[4]`, respectively), though they did succesfully choose words over medial fake-words (`r nel_ts$Mean[3]`; full results reported in Table 8). Performance on part-word versus fake-word trials was at chance, as in Experiments 1 and 2a. A mixed effects logistic regression and follow-up comparisons were run to evaluate how each trial type compared to the others. Follow-up comparisons (adjusted p-values using Tukey's HSD) reveal no significant differences across the trial types (model results can be found in Appendix D).
+
+```{r results="asis", echo = FALSE, include = TRUE}
+apa_table(nel_ts,
+          caption = "T-test comparisons to chance for Experiment 2b (p-values Bonferroni corrected)")
+```
+
+```{r, include = FALSE}
+nel_RT <-
+  nel %>% 
+  filter(RT < 5001,
+         RT > 0)
+
+#model_NEL_RT <- lmer(RT ~ PairCode * c_Trial + CRESP + (c_Trial + CRESP | SubjectID) + (1 | #List2), data = nel_RT)
+#Singular. Iterative simplification until:
+
+model_NEL_RT <- lmer(RT ~ PairCode * c_Trial + CRESP + (c_Trial | SubjectID) + (1 | List2), data = nel_RT)
+
+model_NEL_RT_mcp <- glht(model_NEL_RT, linfct=mcp(PairCode = "Tukey"))
+
+contrastsNEL_RT <- table_glht(model_NEL_RT_mcp)
+x <- as.data.frame(coef(summary(model_NEL_RT)))
+```
+
+For RT, the mixed effects model reveals that participants were signicantly slower on word versus medial fake-word trials than on word versus part-word trials (B `r x$Estimate[3]`, *p* = `r x$"Pr(>|t|)"[3]`); however, this effect does not survive the multiple comparisons analysis. No other main effect or interactions are significant.
+
+```{r, include = FALSE}
+##Correlation script
+
+#Create dataframe averages
+nel_wide <- WideDF(nel)
+
+##check normality
+#shapiro.test(nel_wide$"Word vs PW")
+#shapiro.test(nel_wide$"Word vs Initial FW")
+#shapiro.test(nel_wide$"Word vs Medial FW")
+#shapiro.test(nel_wide$"Word vs Final FW")
+#shapiro.test(nel_wide$"PW vs Initial FW")
+#shapiro.test(nel_wide$"PW vs Medial FW")
+#shapiro.test(nel_wide$"PW vs Final FW")
+
+#Several of these are non-normal, so we turn to kendall/spearman
+corsNEL <- rcorr(as.matrix(nel_wide[,c(2:8)]), type = "spearman")
+M_NEL <- corsNEL$r
+p_mat_NEL <- corsNEL$P
+
+col <- colorRampPalette(c("darkblue", "white", "darkred"))(20)
+```
+
+Spearman correlations were derived across the different trial types. No correlations were significant (correlation plot is reported in Appendix D).
+
+#Summary Experiment 2b
+While participants successfully distinguished words from non-words (part-words or fake-words) when familiarized to non-English language sounds, three aspects of their performance suggest learning suffered in comparison to learning in the native-English and semi-English sound conditions. First, the average proportion choice was numerically lower (mean proportion choice of words over part-words of .66 for the native-English language, .64 for the semi-English language, and .57 for the non-English language) and yielded smaller effect sizes (Cohen’s *d* = `r nel_ts$"Cohen's d"[1]` in the non-English, as compared to .9 in the English-language and .7 in the semi-English language conditions). Second, unlike in Experiments 1 and 2a, participants failed to choose words over edge-manipulated fake-words at a rate that was significantly above chance. The final indicator that participants' performance reflects less overall learning is the lack of any correlation across trial types.  
+We had hypothesized that learners’ degraded capacity to encode the acoustic signal, resulting from the unfamiliar, non-English sounds, would lead to stronger positional effects. This is partially supported by participants' failure to choose words over edge-manipulated fake-words. In other words - slowing down/interfering with learning allows us to see a differentiation in the relative difficulty of the contrasts. The two easiest contrasts appear to be words versus medial fake words (consistent with the TP-encoding account), and words versus part-words (not consistent with the TP-encoding account). In contrast, the results of Experiment 2b suggest that initial and final fake-words are more difficult to distinguish from words, compared to medial fake-words or part-words. The RT data suggest a somewhat different pattern, however: there was conditional evidence that participants were significantly slower to respond to word versus medial fake-word trials in comparison to word versus part-word trials (i.e., significant main effect in the mixed effects model; non-significant in the multiple comparisons analysis). 

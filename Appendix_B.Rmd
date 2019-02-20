@@ -1,0 +1,104 @@
+##Experiment 1
+
+```{r echo = FALSE, include = FALSE}
+contrastsNL <- contrastsNL %>% 
+  separate("rownames(contrastsNL)", c("`Contrast trial type`", "`Trial type`"), sep = " - ") %>%
+  dplyr::select(c("`Trial type`", "`Contrast trial type`":"Pr...z.."), 
+                `Mean difference` = Estimate,
+                `Std. error` = Std..Error,
+                `p value` = Pr...z..)
+`Trial type` <- c("Word vs PW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs In FW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Med FW",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Fin FW",
+                  "~",
+                  "~",
+                  "PW vs In FW",
+                  "~",
+                  "PW vs Med FW")
+
+contrastsNL <- dplyr::select(contrastsNL, c("`Contrast trial type`":"p value"))
+contrastsNL <- cbind(`Trial type`, contrastsNL)
+round(contrastsNL$`p value`, digits = 3) -> contrastsNL$`p value`
+contrastsNL$`p value` <- format.pval(contrastsNL$`p value`, eps = .001)
+```
+
+
+
+
+
+```{r results="asis", echo = FALSE, include = TRUE, out.width = "\\textwidth", fig.pos = "h"}
+apa_table(contrastsNL,
+          caption = "Multiple comparisons of mixed effects model results, Experiment 1",
+          row.names = FALSE)
+```
+
+
+```{r}
+rt_means <- fam_RT %>% group_by(SubjectID, PairCode) %>% summarise(RT = mean(RT)) %>% group_by(PairCode) %>% summarise(Mean = mean(RT), SD = sd(RT)) %>% mutate(PairCode = factor(PairCode, labels = c("Word vs PW","Word vs Initial FW","Word vs Medial FW", "Word vs Final FW", "PW vs Initial FW", "PW vs Medial FW", "PW vs Final FW")))
+```
+
+
+```{r results = "asis", echo = FALSE, include = TRUE, out.width = "\\textwidth", fig.pos = "h"}
+apa_table(rt_means,
+          caption = "Means and standard deviations for RT, Experiment 1")
+```
+
+
+```{r}
+contrastsNL_RT <- as.data.frame(table_glht(model_NL_RT_mcp))
+contrastsNL_RT <- cbind(rownames(contrastsNL_RT), data.frame(contrastsNL_RT, row.names=NULL))
+contrastsNL_RT <- contrastsNL_RT %>% 
+  separate("rownames(contrastsNL_RT)", c("`Contrast trial type`", "`Trial type`"), sep = " - ") %>%
+  dplyr::select(c("`Trial type`", "`Contrast trial type`":"Pr...z.."), 
+                `Mean difference` = Estimate,
+                `Std. error` = Std..Error,
+                `p value` = Pr...z..)
+`Trial type` <- c("Word vs PW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs In FW",
+                  "~",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Med FW",
+                  "~",
+                  "~",
+                  "~",
+                  "Word vs Fin FW",
+                  "~",
+                  "~",
+                  "PW vs In FW",
+                  "~",
+                  "PW vs Med FW")
+
+contrastsNL_RT <- dplyr::select(contrastsNL_RT, c("`Contrast trial type`":"p value"))
+contrastsNL_RT <- cbind(`Trial type`, contrastsNL_RT)
+round(contrastsNL_RT$`p value`, digits = 3) -> contrastsNL_RT$`p value`
+contrastsNL_RT$`p value` <- format.pval(contrastsNL_RT$`p value`, eps = .001)
+```
+
+
+```{r results="asis", echo = FALSE, include = TRUE, out.width = "\\textwidth", fig.pos = "h"}
+apa_table(contrastsNL_RT,
+          caption = "Multiple comparisons of mixed effects model results for RT, Experiment 1",
+          row.names = FALSE)
+```
+
+

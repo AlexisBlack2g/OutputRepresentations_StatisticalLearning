@@ -1,0 +1,213 @@
+```{r, echo = FALSE, include = FALSE}
+sel <- read.csv("sel.csv")
+
+sel$PairCode = factor(sel$PairCode, levels = c("Word vs PW", "Word vs In FW", "Word vs Med FW",
+                                            "Word vs Fin FW", "PW vs In FW", "PW vs Med FW",
+                                            "PW vs Fin FW"))
+```
+
+#Experiment 2a
+##Methods
+###Participants.
+Forty-nine adult native-speakers of English were recruited through the University of
+British Columbia Psychology Department’s paid participants listserv. They received $10 for their participation. Five participants were excluded from the analyses: 3 spoke English as a second language, (i.e., were first exposed to English after the age of 3); 1 reported a language disorder; 1 failed to follow instructions. This left data from 44 participants (33 females; ages 18 to 42 years old).
+
+###Materials.
+Twelve syllables were chosen such that they would structurally parallel the syllables of Experiment 1, but would reflect sounds that are encountered in free variation with a more prototypical form in English, and might not be expected given the syllabic contexts. For example, syllables which in Experiment 1 contained the bilabial sound [p^h] were instead produced with the corresponding ejective consonant [p'] (a p produced with a popping sound that is caused by the release of air compressed between the larynx and oral closure; occasionally heard in conversation in contexts of overemphasis, e.g., if emphasizing the initial or final consonant sounds of the word pop; see Wells, 1982, pg. 261). Syllables in Experiment 1 containing a [b] became more prominently pre-voiced versions of /b/ (a free variant of the target short-lag /b/ of English) in Experiment 2. This language is termed the semi-English language to reflect that the sounds encountered are English-like, but are non-prototypical). The entire inventory of sounds and their concatenation into the 4 trisyllabic words can be found in Figure 6. The stimuli were produced and manipulated in the same way as the materials in Experiment 1. As we found no effect of the artificial language (i.e. set of trisyllabic combinations used) in Experiment 1, only one language was created and used in this experiment.
+
+###Test Items.
+The testing items reflect the same structure as in Experiment 1.
+
+###Analysis and Predictions.
+The analysis and predictions are the same as in Experiment 1.
+
+###Procedure.
+The procedure is the same as in Experiment 1.
+
+```{r out.width = "\\textwidth", fig.pos = "!h", fig.cap = "Segmental inventory for the semi-English (Experiment 2a) and non-English (Experiment 2b) languages."}
+knitr::include_graphics("/Users/alexis/Dropbox/Manuscripts/SL_Chunking_AdultKids/SEL_NEL_inventory.pdf")
+```
+
+#Results
+```{r include = FALSE}
+sel_ts <- dfTs(sel)
+```
+
+```{r echo = FALSE, include = FALSE}
+#model_SEL <- glmer(ACC ~ PairCode * c_Trial + CRESP + (c_Trial + CRESP | SubjectID) + (1 | #List2), 
+#                  data = sel, family = binomial, 
+#                  control = glmerControl(optimizer = "bobyqa", 
+#                                         optCtrl=list(maxfun=2e6)))
+#Model is singular. Adopted same procedure as in Experiment 1 until no longer Singular:
+
+model_SEL <- glmer(ACC ~ PairCode * c_Trial + CRESP + (0 + c_Trial | SubjectID) + (1 | List2), 
+                  data = sel, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", 
+                                         optCtrl=list(maxfun=2e6)))
+
+model_SEL_mcp <- glht(model_SEL, linfct=mcp(PairCode = "Tukey"))
+
+contrastsSEL <- table_glht(model_SEL_mcp)
+```
+As in Experiment 1, participants successfully distinguished words from partwords (M = `r sel_ts$Mean[1]`, SD = `r sel_ts$SD[1]`, 95% CI = `r sel_ts$"95% Conf int"[1]`, *t*(41) = `r sel_ts$"T value"[1]`, Bonferroni-corrected *p* < .0001, *d* = `r sel_ts$"Cohen's d"[1]`). And, as in Experiment 1, participants chose words over fake-words across all three syllable positions, and failed to choose either part-words or fake-words in part-word versus fake-word trials (see Figure 7 and Table 5). To examine performance between each of the trial types, controlling for trial, target location, and item type, we ran a mixed effects logistic regression model with random slopes for trial and target location by subject, and random intercepts for item. This model was singular; it was iteratively pruned to avoid this issue, which resulted in the model shown below.  
+\begin{center}Choice $\sim$~ Contrast Type * Trial + Target Location + (0 + Trial | Subject) + (1 | Item)\end{center}
+
+Paralleling the results of Experiment 1, we again find that trial is not significant (Estimate = `r coef(summary(model_SEL))[8,1]`, *p* = `r coef(summary(model_SEL))[8,4]`). There are also no significant interactions between trial and contrast type (see Table 6). Follow-up comparisons reveal that part-word versus fake-word trials significantly differed from word versus part-word trials across all three syllable positions, but that not all part-word versus fake-word trials differed from all word versus fake-word trials. All part-word versus fake-word trial comparisons are reported in Table 7 (word versus fake-word comparisons can be found in Appendix C). 
+
+```{r out.width = "\\textwidth", fig.pos = "!h", fig.cap = "Performance across trial types in the Semi-English Language (Experiment 2a). Asterisks indicate conditions  significantly different from chance (Bonferroni corrected): **** = p < .0001, ** = p < .01. PW = part-word, FW = fake-word."}
+main_plot(sel) + annotate("text", y = 1.1, x = c(1, 2, 3, 4), label = c("****", "**", "****", "*"))
+```
+
+
+```{r results="asis", echo = FALSE, include = TRUE}
+apa_table(sel_ts,
+          caption = "T-test comparisons to chance for Experiment 2a (p-values Bonferroni corrected)")
+```
+
+
+```{r, echo = FALSE, include = FALSE}
+#Create table for SEL model results
+cc <- confint(model_SEL, parm = "beta_", method = "Wald")  
+p <- format.pval(round(summary(model_SEL)$coefficients[,4], digits = 2), eps = .001)
+ctab <- cbind(est = round(fixef(model_SEL), digits = 2), cc)
+rtab <- exp(ctab)
+rtab <- cbind(rtab, p)
+`Fixed Effect` <- c("Intercept",
+                    "Word vs Initial FW",
+                    "Word vs Medial FW",
+                    "Word vs Final FW",
+                    "PW vs Initial FW",
+                    "PW vs Medial FW",
+                    "PW vs Final FW",
+                    "Trial",
+                    "Target Location [2]",
+                    "Trial x Word vs Initial FW",
+                    "Trial x Word vs Medial FW",
+                    "Trial x Word vs Final FW",
+                    "Trial x PW vs Initial FW",
+                    "Trial x PW vs Medial FW",
+                    "Trial x PW vs Final FW")
+
+rtab <- cbind(rtab, `Fixed Effect`)
+rtab <- as.data.frame(rtab)
+
+rtab <- rtab[c(1:7,9,8,10:15),c(5,1:4)]
+
+rtab <- 
+  rtab %>% 
+  mutate(est = round(as.numeric(as.character(est)),digits = 2),
+         `2.5 %` = round(as.numeric(as.character(`2.5 %`)),digits = 2),
+         `97.5 %` = round(as.numeric(as.character(`97.5 %`)),digits = 2))%>% 
+  rename(`Odds Ratio` = est,
+         `Lower 95% CI` = `2.5 %`,
+         `Upper 95% CI` = `97.5 %`,
+         `p value` = p) 
+```
+
+```{r results = "asis", echo = FALSE, include = TRUE}
+apa_table(rtab,
+          caption = "Mixed effects model results for proportion choice, Experiment 2a")
+```
+
+```{r echo = FALSE, include = FALSE}
+#Creating a table for the comparisons
+contrastsSEL <- as.data.frame(table_glht(model_SEL_mcp))
+contrastsSEL <- cbind(rownames(contrastsSEL), data.frame(contrastsSEL, row.names=NULL))
+contrastsSEL <- contrastsSEL %>% 
+  separate("rownames(contrastsSEL)", c("`Contrast trial type`", "`Trial type`"), sep = " - ") %>%
+  dplyr::select(c("`Trial type`", "`Contrast trial type`":"Pr...z.."), 
+                `Mean difference` = Estimate,
+                `Std. error` = Std..Error,
+                `p value` = Pr...z..)
+contrastsSEL_sig <- contrastsSEL[c(4:6, 9:11, 13:18),]
+`Trial type` <- c("Word vs PW",
+                  "~",
+                  "~",
+                  "Word vs In FW",
+                  "~",
+                  "~",
+                  "Word vs Med FW",
+                  "~",
+                  "~",
+                  "Word vs Fin FW",
+                  "~",
+                  "~")
+
+contrastsSEL_sig <- dplyr::select(contrastsSEL_sig, c("`Contrast trial type`":"p value"))
+contrastsSEL_sig <- cbind(`Trial type`, contrastsSEL_sig)
+round(contrastsSEL_sig$`p value`, digits = 3) -> contrastsSEL_sig$`p value`
+contrastsSEL_sig$`p value` <- format.pval(contrastsSEL_sig$`p value`, eps = .001)
+```
+
+```{r results="asis", echo = FALSE, include = TRUE}
+apa_table(contrastsSEL_sig,
+          caption = "Multiple comparisons of mixed effects model results, Experiment 2a (Part-word versus Fake-word trial comparisons)",
+          row.names = FALSE)
+```
+
+
+```{r echo = FALSE, include = FALSE}
+sel_RT <-
+  sel %>% 
+  filter(RT < 5001)
+
+#model_SEL_RT <- lmer(RT ~ PairCode * c_Trial + CRESP + (c_Trial + CRESP | SubjectID) + (1 | #List2), data = sel_RT)
+
+model_SEL_RT <- lmer(RT ~ PairCode * c_Trial + CRESP + (1 | SubjectID) + (1 | List2), data = sel_RT)
+x <- coef(summary(model_SEL_RT))
+
+model_SEL_RT_mcp <- glht(model_SEL_RT, linfct=mcp(PairCode = "Tukey"))
+
+contrastsSEL_RT <- table_glht(model_SEL_RT_mcp)
+```
+
+Reaction times were also analyzed using the same model structure. The estimate for word versus initial fake-word trials was significant (B = `r x[2,1]`, *p* = `r x[2,5]`), reflecting the fact that participants were on average 130 msec slower to respond on these trials than on the word versus part-word (the reference level) trials (controlling for all other factors). This contrast did not survive the multiple comparisons test (B = `r contrastsSEL_RT[1,1]`, *z* = `r contrastsSEL_RT[1,3]`, *p* = `r contrastsSEL_RT[1,4]`); however, part-word versus initial, medial, and final fake-word trials were revealed to have faster average reaction times than word versus initial fake-word trials (tables of RT means, standard deviations, and model estimates can be found in Appendix C).
+
+```{r echo = FALSE, include = FALSE}
+##Correlation script
+
+#Create dataframe averages
+sel_wide <- WideDF(sel)
+
+##check normality
+#shapiro.test(sel_wide$"Word vs PW")
+#shapiro.test(sel_wide$"Word vs Initial FW")
+#shapiro.test(sel_wide$"Word vs Medial FW")
+#shapiro.test(sel_wide$"Word vs Final FW")
+#shapiro.test(sel_wide$"PW vs Initial FW")
+#shapiro.test(sel_wide$"PW vs Medial FW")
+#shapiro.test(sel_wide$"PW vs Final FW")
+
+#Several of these are non-normal, so we turn to kendall/spearman
+corsSEL <- rcorr(as.matrix(sel_wide[,c(2:8)]), type = "spearman")
+M_SEL <- corsSEL$r
+p_mat_SEL <- corsSEL$P
+
+col <- colorRampPalette(c("darkblue", "white", "darkred"))(20)
+```
+
+Finally, we examined the correlations in performance across the trial types. Again, the distributions are largely non-normally distributed (as determined by Shapiro-Wilk normality tests); therefore, spearman correlations are used in place of Pearson coefficients. There is one significant positive association: word versus part-word to word versus medial fake-word trials (*rs* = `r M_SEL[3,1]`, *p* = `r p_mat_SEL[3,1]`). As in Experiment 1, performance on part-word versus final fake-word trials negatively correlates with performance on the segmentation tests, but in Experiment 2a the relationship holds for both for word versus part-word trials (*rs* = `r M_SEL[7,1]`, *p* = `r p_mat_SEL[7,1]`) and word versus initial fake-word trials (*rs* = `r M_SEL[7,2]`, *p* = `r p_mat_SEL[7,2]`). There is also a negative correlation between part-word versus initial fake-word trials and word versus part-word trials (*rs* = `r M_SEL[5,1]`, *p* = `r p_mat_SEL[5,1]`) (see Figure 8).   
+
+```{r echo = FALSE, include = FALSE}
+cor1 <- ggplot(sel_wide, aes(x = `Word vs In FW`, y = `Word vs Med FW`)) + geom_jitter() + scale_y_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + scale_x_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + geom_smooth(method = "lm") + geom_hline(yintercept = .5, lty =3) + geom_vline(xintercept = .5, lty = 3) + theme_manuscript + theme(plot.margin = margin(10, 1, 1, 1))
+
+cor2 <- ggplot(sel_wide, aes(x = `Word vs PW`, y = `PW vs In FW`)) + geom_jitter() + scale_y_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + scale_x_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + geom_smooth(method = "lm") + geom_hline(yintercept = .5, lty =3) + geom_vline(xintercept = .5, lty = 3) + theme_manuscript + theme(plot.margin = margin(10, 1, 1, 1))
+
+cor3 <- ggplot(sel_wide, aes(x = `Word vs PW`, y = `PW vs Fin FW`)) + geom_jitter() + scale_y_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + scale_x_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + geom_smooth(method = "lm") + geom_hline(yintercept = .5, lty =3) + geom_vline(xintercept = .5, lty = 3) + theme_manuscript + theme(plot.margin = margin(10, 1, 1, 1))
+
+cor4 <- ggplot(sel_wide, aes(x = `Word vs In FW`, y = `PW vs Fin FW`)) + geom_jitter() + scale_y_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + scale_x_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + geom_smooth(method = "lm") + geom_hline(yintercept = .5, lty =3) + geom_vline(xintercept = .5, lty = 3) + theme_manuscript + theme(plot.margin = margin(10, 1, 1, 1))
+
+corMatrix = ggcorrplot(M_SEL, type = "lower", lab = TRUE, lab_size = 3) + theme_manuscript + 
+  annotate("text", y = c(1.31, 1.31, 1.31, 2.31), x = c(2.02, 4.02, 6.02, 6.02), label = c("**", "*", "*", "*"), fontface = 2) + theme(axis.text.y = element_text(colour = "black"))
+
+plot5 <- cowplot::plot_grid(cor2, cor3, cor4, cor1, label_fontfamily = "Times", ncol = 3, hjust = .1)
+ggdraw() + draw_plot(plot5, 0, .2, .98, .8) + draw_plot(corMatrix, .35, 0, .675, .6) -> plot8
+```
+
+```{r fig.height=6, out.width = "\\textwidth", fig.pos = "!h", fig.pos = "!h", fig.cap="Correlations Experiment 2a"}
+plot8
+```
+
+
+#Interim Summary
+Participants who listened to semi-familiar speech sounds performed similarly to their counterparts in Experiment 1, who heard English (i.e., familiar) speech sounds. That is, they successfully distinguished words from part-words and fake-words, and did not consistently choose either part-words or fake-words on trials that pitted the two against each other. The hints of positional-encoding in Experiment 1 were echoed and reinforced here: participants performed numerically worse on word versus fake-word trials (suggesting greater difficulty with positionally-accurate foils), and there was some evidence to suggest that participants found word versus initial fake-words particularly confusing (performance on this trial type was slower than performance on word versus part-word and part-word versus initial and medial fake-word trials). Though performance was not statistically different from chance, participants numerically preferred fake-words over part-words across all three syllable positions. Moreover, preference for fake-words correlated with segmentation performance: participants who were more likely to choose words over part-word or words over initial fake-words, were also more likely to choose edge-based fake-words over part-words. In Experiment 2b we presented participants with entirely unfamiliar language sounds, in an attempt to increase perceptual difficulties, and thus further probe the underlying encoding mechanisms.

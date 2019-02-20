@@ -1,0 +1,225 @@
+---
+title             : "Using output representations to reveal the underlying mechanisms of statistical learning"
+shorttitle        : "Output Representations in SL"
+
+author: 
+  - name          : "Alexis K. Black"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Haskins Laboratories; New Haven, CT, 06510"
+    email         : "alexis.black@yale.edu"
+  - name          : "Carla L. Hudson Kam"
+    affiliation   : "2"
+
+affiliation:
+  - id            : "1"
+    institution   : "Haskins Laboratories"
+  - id            : "2"
+    institution   : "University of British Columbia"
+
+authornote: |
+  Alexis K. Black, Haskins Laboratories; Carla L. Hudson Kam, Department of Linguistics, University of British Columbia.
+  This research was supported in part by by a University of British Columbia Arts Graduate Research Award and a grant from the Natural Sciences and Engineering Research Council of Canada (NSERC), funding reference number 408041-2011. 
+
+abstract: |
+  Recent theories of language acquisition rely on the facility of human infants to form unique representations via a process of tracking statistical properties over smaller representational units. This has received particular emphasis in the domain of word segmentation - infants, children, and adults appear to be capable of deriving the transitional probability between units (e.g., syllables) to extract candidate chunks (e.g., words). While the general phenomenon is easily produced in an experimental setting, the nature of the mechanism/mechanisms that yields the behavior remain underspecified. In the present work, we probe the output representations that emerge from a standard word segmentation statistical learning experiment as a means of elucidating the underlying process of learning. Across three experiments, we find evidence that learners extract positional information from the underlying chunks in a statistical learning task. We also find evidence consistent with the hypothesis that decreasing the perceptual familiarity of the stimulus increases this feature of the output representations, but only when the stimuli remain familiar enough to sufficiently learn from. At the same time, the data also reveal the limitations of the post-task, forced-choice design that has been commonly used to assess statistical learning performance. We conclude that careful consideration of what exactly is learned during even simple, statistical word segmentation tasks can inform our understanding of the underlying learning mechanisms, but that future work will be necessary to disentangle the effects of learning from continuous versus from non-continuous streams of information. 
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "statistical learning, word segmentation, chunking"
+
+bibliography      : 
+- zotero-bib.bib
+nocite            : '@*'
+
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : no
+mask              : no
+draft             : no
+figsintext        : yes
+fig_caption       : yes
+documentclass     : "apa6"
+classoption       : "man"
+output            : 
+  papaja::apa6_pdf
+header-includes:
+  - \usepackage{pdflscape}
+  - \newcommand{\blandscape}{\begin{landscape}}
+  - \newcommand{\elandscape}{\end{landscape}}
+  - \raggedbottom
+---
+```{r message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(autodep = FALSE)
+knitr::opts_chunk$set(cache = FALSE)
+```
+
+```{r setup, include = FALSE}
+library(papaja)
+#install.packages("tidyverse")
+library(tidyverse)
+#install.packages("gdata")
+library(gdata)
+#install.packages("lme4")
+library(lme4)
+#install.packages("lmerTest")
+library(lmerTest)
+#install.packages("magick")
+library(magick)
+#install.packages("pdftools")
+library(pdftools)
+#install.packages("broom")
+library(broom)
+#install.packages("cowplot")
+library(cowplot)
+#install.packages("multcomp")
+library(multcomp)
+#install.packages("Hmisc")
+library(Hmisc) #Package for correlation matrix
+#install.packages("corrplot")
+library(corrplot) #Package for correlation plot
+#install.packages("ggcorrplot")
+library(ggcorrplot)
+#install.packages("citr")
+library(citr)
+```
+
+
+```{r Figure Setup}
+greyscale = colors()[c("#f0f0f0", "#bdbdbd", "#737373")]
+
+main_plot <- function(x){
+    x %>%
+    group_by(SubjectID, PairCode, TrialType) %>% 
+    summarise(ACC = mean(ACC)) %>% 
+    ggplot(aes(x = PairCode, y = ACC, fill = TrialType)) +
+    geom_violin(alpha = .5) +
+    geom_dotplot(binaxis = "y", stackdir = "center", binwidth = .02) +
+    stat_summary(fun.y = "mean", geom = "point", shape = 23, size = 3, fill = "white") +
+    stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.05, colour = "white") +
+    ylab("Proportion choice higher TP sequence") +
+    xlab("Trial Type") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.85, hjust = .85, size = 12)) +
+    scale_x_discrete(labels = c("Word vs PW",
+                                "Word vs Initial FW",
+                                "Word vs Medial FW",
+                                "Word vs Final FW",
+                                "PW vs Initial FW",
+                                "PW vs Medial FW",
+                                "PW vs Final FW")) +
+    scale_y_continuous(breaks = c(0.0, 0.25, 0.50, 0.75, 1.0)) +
+    geom_abline(intercept=.5, slope=0, lty = 3) +
+    scale_fill_manual(values = c("grey40", "grey60", "grey80")) +
+    geom_vline(xintercept = 1.5, lty = 5) + 
+    geom_vline(xintercept = 4.5, lty = 5) +
+    theme(legend.position = "none") +
+    theme_manuscript
+}
+
+theme_manuscript <- theme(
+  panel.background = element_rect(fill="white",colour="black"),
+  axis.ticks = element_line(colour="black"),
+  panel.grid = element_line(colour="white"),
+  axis.text.y = element_text(colour="grey", size=12),
+  axis.text.x = element_text(colour="black", size = 12),
+  plot.title = element_text(vjust=2, size = 14),
+  text = element_text(size=14, family="Times")
+)
+```
+
+```{r Analysis Scripts}
+### For T-tests
+simpleT <- function(df) {
+  t.test(df$ACC, mu = 0.5)
+}
+
+
+SD <- function(df) {
+  sd(df$ACC)
+}
+
+
+dfTs <- function(X) {
+  X %>% 
+    group_by(SubjectID, PairCode) %>% 
+    summarise(ACC = mean(ACC)) %>% 
+    group_by(PairCode) %>% 
+    nest() %>% 
+    mutate(fit = map(data, simpleT),
+           tidy = map(fit, tidy),
+           SD = map(data, SD)) %>% 
+    dplyr::select(PairCode, SD, tidy) %>% 
+    unnest(SD, tidy) %>% 
+    mutate(d = (estimate - .5)/SD,
+           p.value = round(p.adjust(p.value, method = "bonferroni", n = 7), digits = 3),
+           p.value = format.pval(p.value, eps = .001),
+           confint = paste0("[",round(conf.low,digits = 2), " - ", round(conf.high,digits = 2), "]")) %>% 
+    dplyr::select(c("PairCode", "estimate","SD", "confint", "statistic", "p.value", "d"), 
+                  `Trial Type` = PairCode, 
+                  Mean = estimate,
+                  `95% Conf int` = confint,
+                  `T value` = statistic,
+                  p = p.value, 
+                  `Cohen's d` = d)
+}
+
+## For multiple comparisons tables
+#Code from https://gist.github.com/ajpelu/194e721077ec045a2b864088908e7aca
+table_glht <- function(x) {
+  pq <- summary(x)$test
+  mtests <- cbind(pq$coefficients, pq$sigma, pq$tstat, pq$pvalues)
+  error <- attr(pq$pvalues, "error")
+  pname <- switch(x$alternativ, less = paste("Pr(<", ifelse(x$df ==0, "z", "t"), ")", sep = ""), 
+                  greater = paste("Pr(>", ifelse(x$df == 0, "z", "t"), ")", sep = ""), two.sided = paste("Pr(>|",ifelse(x$df == 0, "z", "t"), "|)", sep = ""))
+  colnames(mtests) <- c("Estimate", "Std. Error", ifelse(x$df ==0, "z value", "t value"), pname)
+  return(mtests)
+  
+}
+
+##For correlations
+WideDF <- function(X) {
+  X %>% 
+  group_by(SubjectID, PairCode) %>% 
+  summarise(ACC = mean(ACC)) %>% 
+  spread(PairCode, ACC)
+}
+```
+
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+```{r 'intro', child="Introduction.Rmd"}
+```
+
+```{r 'exp1', child="Experiment1.Rmd"}
+```
+
+```{r 'exp2a', child="Experiment2a.Rmd"}
+```
+
+```{r 'exp2b', child="Experiment2b.Rmd"}
+```
+
+```{r 'conc', child="Conclusion.Rmd"}
+```
+
+\clearpage
+
+#References
+
+```{r create_r-references}
+r_refs(file = "zotero-bib.bib")
+```
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id = "refs"></div>
+\endgroup

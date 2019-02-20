@@ -1,0 +1,279 @@
+#Experiment 1 
+``` {r EL, include = FALSE}
+fam <- read.csv("fam.csv")
+
+fam$PairCode = factor(fam$PairCode, levels = c("Word vs PW", "Word vs In FW", "Word vs Med FW",
+                                            "Word vs Fin FW", "PW vs In FW", "PW vs Med FW",
+                                            "PW vs Fin FW"))
+```
+##Methods   
+###Participants.
+Forty-four adult native-speakers of English were recruited through the University of British Columbia Psychology Department’s paid participants listserv. Two were excluded because they did not meet our criterion for English-language exposure (i.e., they did not live in an English-speaking environment until after the age of 3), leaving data from 42 participants (30 female, age range 18-50 years). Participants received $10 as remuneration for their participation.  
+
+###Stimuli.
+The basic stimuli design was as follows: twelve syllables consisting of English phonemes were concatenated into four words of three syllables each. The syllables used to form the words were produced by a trained phonetician (the first author) in a sound-proofed booth and digitally recorded at a sampling rate of 44,100 Hz. Syllables were normalized via the Vocal Toolkit plug-in (Corretge, 2012) in Praat (Boersma & Weenink, 2012) to ensure the same durations (220 milliseconds), F0 medians (178 Hz), F0 contours, intensity means (70 dB), and intensity contours. Additional details regarding stimulus construction can be found in Appendix A.   
+To avoid the potential influence of specific syllables (or words), two different sets of trisyllabic combinations were constructed in order to make up two languages. The phoneme inventory and two languages are presented in Figure 1. The words were then concatenated into two semi-random lists per language (to avoid order-specific effects in learning). In each list, each word was repeated 48 times and interlaced with the remaining words in such a way that syllable-to-syllable TPs across word boundaries were 0.33, and TPs between syllables within a word were 1.0. The resulting familiarization strings were 2 minutes 10 seconds in length. The initial and final 5 seconds ramped up and down in amplitude, respectively, to prevent providing participants with a clear cue to word boundaries other than TPs. There were no pauses or coarticulatory cues between any syllable; the only structural cue in the familiarization strings was the relative TP strength between syllables. Language and list were counterbalanced across participants (Language A, list 1: *n* = 10, list 2: *n* = 11; Language B, list 1: *n* = 10, list 2: *n* = 11).  
+
+```{r fig.cap = "Experiment 1 sound inventory and artificial languages"}
+knitr::include_graphics("/Users/alexis/Dropbox/Manuscripts/SL_Chunking_AdultKids/NL_inventory.pdf")
+```
+
+###Tests.   
+Participants were tested using a 2-AFC paradigm, in which two trisyllabic sequences were presented one after the other and participants were prompted to indicate which sequence sounded more like a word from the familiarization language. There were three types of trisyllabic sequences that were pitted against each other in the forced choice trials: words, part-words, and fake-words. The construction of these items is described below, and depicted graphically in Figure 2.    
+*Words* Words are the trisyllabic sequences that occurred in the familiarization language with perfect TPs between each syllable.   
+*Part-words* Part-words are also trisyllable sequences that occurred in the familiarization stream, but in these strings one pair of syllables has a perfect TP (1.0) while the other has a lower TP (.33). These were constructed by taking the final syllable of one word and combining it with the first two syllables of another word, or the final two syllables of a word with the first syllable of another word.  
+*Fake-words* Fake-words are positionally sensitive non-occurring trisyllabic strings. To create a fake-word, a single syllable in a word was replaced by the corresponding syllable from a different word. Thus, each syllable in a fake-word is in its correct location as defined by word edges, but one of the syllables did not occur with the other two syllables, and so the string as a whole was never experienced during familiarization. There were three different kinds of fake-words: initial-syllable, medial-syllable, and final-syllable. In initial- and final-syllable fake-words, the string comprises one TP of 1.0 and one TP of 0.0. Medial-syllable fake-words have two TPs of 0.0.  
+
+```{r fig.cap = "Part-word and fake-word foil construction"}
+knitr::include_graphics("Foils.pdf")
+```
+
+These item types were pitted against each other in three major contrast groupings: words versus part-words (8 test items), words versus initial-, medial-, and final-fake-words (24 test items total, 8 per syllable position manipulation type), and part-words versus initial-, medial-, and final-fake-words (24 test items; 8 per syllable manipulation type). Under the TP-encoding hypothesis, performance on these contrast pairs should be ordered with respect to the relative strength of TPs. In other words, participants should perform best on word versus medial fake-word contrasts, when a word, which has two perfect adjacent TPs, is pitted against a trisyllabic sequence with two adjacent TPs of zero. Initial- (TP sequences of 0 and 1.0) and final- (TP sequences of 1.0 and 0) fake words should be next easiest to discriminate from words, followed by part-words (TPs of 1.0 and 0.33) from words. Participants should furthermore choose part-words over fake-words when the two are pitted against each other, because part-words are strings that were encountered during familiarization and thus contain non-zero TPs, whereas fake-words are sequences that were never encountered. This order of performance contrasts with the predicted order of performance if participants are encoding syllable position information. If participants are extracting word-like chunks, fake-words (at least of some syllable manipulation types) will be confuseable with words. Unlike under the TP-encoding account, therefore, participants should perform worse on word versus fake-word contrasts (at least in some syllable position manipulations) than they do on word versus part-word contrasts. Finally, participants should choose fake-words (at least in some syllable position manipulations) over part-words: if participants are extracting word-like units, then fake-words will resonate more with words, as they share initial, medial, and final syllables, in contrast to part-words, which reflect ‘shuffled’ words. To exemplify: given the two words lexical and item, we are essentially asking participants if ‘lexitem’ ([lEksItum], i.e., a mismatched, or fake-word) sounds more ‘word-like’ than ‘xicali’ ([ksikalai?], i.e., a part-word that combines the final sounds in lexical and first sounds of item)?  
+We also make different predictions for how performance on the contrast types will correlate under the two encoding accounts. Specifically, preference for higher TP items should correlate across the contrasts if participants are using TPs to make their decisions, whereas preference for words over part-words will correlate with preference for fake-words over part-words if participants are using positional information. The full set of predictions under both accounts is depicted graphically in Figure 3.  
+
+```{r out.width = "\\textwidth", fig.pos = "!h", fig.cap = "Pattern of performance as predicted by the TP- and Position-encoding accounts."}
+knitr::include_graphics("/Users/alexis/Dropbox/Manuscripts/SL_Chunking_AdultKids/Predictions.pdf")
+```
+
+###Procedure.  
+Participants were told they would first be listening to some sounds, and then answering some questions about those sounds. They were seated in a sound-attenuated room in front of a computer screen and button box and told to follow the instructions provided by the computer. They were asked to use their two index fingers to provide answers via the two outermost buttons of a button box. The experiment was administered with E-prime 2.0 (Psychology Software Tools, Pittsburgh, PA). Participants were first led through 4 training trials to ensure understanding of the button box keys. In the training trials, they were asked to listen to two sound files and indicate the one that sounded like the word “say” (they heard [se] and [ma]). After completing these trials, they were asked to please listen quietly to a language called Vesutian. They were prompted to press a button to start, after which a blank screen appeared and the familiarization stimuli began playing.  
+After familiarization they were reminded that they would hear two options, and asked to please choose the option that sounded more like a word from the language they had just listened to. In each test trial, two trisyllabic items were presented with a 1,000 msec. ISI (e.g., Newport & Aslin, 2004). Participants were given 5,000 msec. to respond (e.g.,Newport & Aslin, 2004; Toro, et al., 2005).\footnote{A subset of participants were unintentionally given 10,000 msec to respond. Of these, 17 (of 42) participants took longer than 5000 msec on a total of 67 separate trials. All participants were over-limit on 7 or fewer trials (which are spread across the different trial type manipulations), with the exception of one participant who was over-limit on 17 trials. This participant has been excluded from RT analyses (as he is missing half or more of the data for two conditions – the two initial syllable manipulation trial types), but retained for all other analyses. The remaining over-limit trials have been individually excluded for the RT analysis, and retained for all other analyses. All non-RT analyses pattern the same when these same over-limit RT trials are excluded.} There were 56 test trials in total (8 words vs part-words, 24 words vs. fake-words, and 24 part-words vs fake-words), and trial order was randomized by participant. At the end of the experiment, a screen thanked the participants and instructed them to see the experimenter; participants then completed an exit interview that assessed meta-linguistic awareness and reactions to the task, and a language background questionnaire (results reported in Black and Hudson Kam, in prep).   
+
+###Measures & Analysis. 
+We analyzed participants’ proportion choice of words versus part-words, words versus initial-, medial-, and final-fake-words, and part-words versus initial-, medial-, and final-fake-words as a means of evaluating participants’ sensitivity to the statistical structure of the stream. Evidence of learning is first determined by comparing performance on the contrast types to chance levels. In each case, proportion choice is calculated in terms of the *higher* TP item: scores above 0.5 reflect greater proportion choice high-TP items, while scores below 0.5 reflect greater proportion choice low-TP items. With the exception of the word versus part-word contrast, performance above 0.5 thus reflects TP-encoding, while performance below 0.5 reflects evidence for position-encoding. The word versus part-word contrast is the contrast type used most often in statistical word learning studies (e.g., Saffran et al., 1996; Thiessen, 2010; Endress & Mehler, 2009a; Peña et al., 2002; Perruchet & Poulin-Charronat, 2012); it therefore serves in part as a within-subject control to confirm that participants are segmenting the stream as expected. We are also interested, however, in how performance on the different contrast types relates to performance on all other contrast types (see Figure 3 for the full set of predictions). To explore this, we use mixed effects logistic regression and follow-up Tukey comparisons to establish the effect of learning in each syllable position manipulation and trial type in comparison to all others.  
+We also analyzed reaction times (RTs) to each trial type, as RTs can reveal processing differences across stimuli that raw accuracy scores do not (e.g., differences in attentional mechanisms, Prinzmetal, McCool, & Park, 2005; developmental shifts in implicit learning, Janacsek, Fiser, & Nemeth, 2012). We hypothesized that slower reaction times would correspond to foils that were more difficult to reject; the predictions follow identical logic to that of the raw accuracy scores (Figure 3). RTs are calculated as the lag between the onset of the second trisyllabic sequence presented in a trial and participant response; as participants might base their 2AFC decisions on the first trisyllabic sequence alone, RTs are considered from the earliest possible responses, and have not been trimmed from the left edge (as is commonly done to prevent the inclusion of false-alarm/unintentional responses). It is also common for RT results to be presented for correct-identification trials only; however, under this paradigm there is no correct choice – rather, different choices are hypothesized to reflect different information having been learned. Thus, RT data is analyzed using all trials. Finally, we also present correlations between performance on the various trial types.  
+All analyses are conducted using R statistical software (Version 3.3.3), with the packages lme4 (Bates, Maechler, Bolker, Walker, 2015), lmerTest (Kuznetsova, Brockhoff, & Christensen, 2017), multcomp (for multiple comparisons of categorical variables entered in regression models; Hothorn, Bretz, & Westfall, 2008), Hmisc (for correlation matrices; Harrell et al., 2018), corrplot (for visualization of correlation matrices; Wei & Simko, 2017), and the suite of packages compiled through the tidyverse package (Wickham, 2017). This manuscript has been constructed and rendered through RMarkdown. All code and data are hosted on https://github.com/AlexisBlack2g/PositionBasedStatisticalLearning/. 
+  
+#Results
+```{r EL results, include = FALSE}
+fam_ts <- dfTs(fam)
+```
+Performance on the various trial types is shown in Table 1 and Figure 4\footnote{Note: there are a small number of trials on which participants failed to respond (28 of 2464 total in Experiment 2a, and 23 of 2128 in Experiment 2b). The pattern of results is the same when trials are retained or removed. As there is no 'right' or 'wrong' choice in this paradigm, however, including these trials would require coding a lack of response as reflecting a particular type of representation. As this is clearly undesirable, these trials have been removed.}. In Figure 4, dots reflect individual participant means and filled white diamonds reflect mean group performance, with bars indicating plus/minus one standard error. Violin plots serve to highlight the overall distributions of responses. The dotted line at 0.5 reflects chance level. For each trial type, performance above the dotted line indicates greater proportion choice of the higher TP sequence (either a word or part-word, depending on trial type). Performance below the dotted line indicates greater proportion choice of the lower TP sequence (part-words or fake-words, depending on trial type).  
+Participants selected words over part-words at a rate significantly different from chance (M = `r fam_ts$Mean[1]`, SD = `r fam_ts$SD[1]`%, 95% CI = `r fam_ts$"95% Conf int"[1]`, *t*(41) = `r fam_ts$"T value"[1]`, Bonferroni-corrected *p* < .0001, *d* = `r fam_ts$"Cohen's d"[1]`). This confirms that participants have segmented the stream as expected, in line with previous studies using this measure, so we next examined performance on the other test types to probe the nature of participants' knowledge.  
+The first test of the position- and TP-encoding hypotheses involves comparison of the remaining conditions to chance-level performance. Under the TP-encoding hypothesis, participants are predicted to choose higher TP units in all trial types. Above chance performance on each trial type would thus constitute strong evidence in favor of this account. Under the position-encoding account, on the other hand, participants are predicted to choose positionally-faithful items over non-positionally faithful items (i.e., part-words), which would result in *below* chance performance on part-word versus fake-word trials. Moreover, at the extreme, fake-words might be confusable enough with words to degrade performance to chance-level performance in the word versus fake-word trials. The data show that participants selected words over fake-words across all three syllable positions (means range from `r fam_ts$Mean[4]` to `r fam_ts$Mean[3]`, Cohen's *d* range from `r fam_ts$"Cohen's d"[1]` to `r fam_ts$"Cohen's d"[3]`, full results in Table 1), and did not significantly prefer either part-words or fake-words when these items were pitted against each other (M = range from `r fam_ts$Mean[5]` to `r fam_ts$Mean[6]`, Cohen's *d* range from `r fam_ts$"Cohen's d"[5]` to `r fam_ts$"Cohen's d"[6]`, full results in Table 1).  
+
+
+```{r out.width = "\\textwidth", fig.pos = "!h", fig.cap = "Performance across trial types in Experiment 1. Asterisks indicate conditions significantly different from chance (Bonferroni corrected): **** = p < .0001, ** = p < .01. PW = part-word, FW = fake-word."}
+main_plot(fam) + annotate("text", y = 1.1, x = c(1, 2, 3, 4), label = c("****", "****", "****", "**"))
+```
+
+
+```{r results="asis", echo = FALSE, include = TRUE}
+apa_table(fam_ts,
+          caption = "T-test comparisons to chance for Experiment 1 (p-values Bonferroni corrected)")
+```
+
+The TP-encoding and position-encoding hypotheses, however, also make different claims about how performance on each contrast type relates to performance on the other contrast types. To investigate, we ran a mixed effects logistic regression model with contrast type (coded with "word versus part-word" as reference level). We were also interested in whether learning changed over the course of the experiment, and therefore included trial and its interaction with the trial types. Language condition and item were also included in the model to control for learning potential language- or item-specific effects. There was significant order bias in participant responses (more frequent choice of the first item heard, $\chi^2$(1) = 105.44, *p* < .0001), as has been found elsewhere in the SL literature (Shufaniya & Arnon, 2018). We therefore also control for this factor by including target location. The fully specified model included the within-subject factors as random slopes by participant, and the between-subject factors as random intercepts; however, the resulting fit was singular, indicating that the random effects structure may be too complex to support the existing datapoints. An iterative pruning process (see Matuschek et al., 2017 and Bates, et al., 2015) was employed, until the model successfully converged and yielded no degenerate/singularity warnings. The final model structure was specified in R as is shown below.
+
+\begin{center}Choice $\sim$ Contrast Type * Trial + Target Side + Language + (Trial | Subject)\end{center} 
+
+```{r Fam Prop, include = FALSE, echo = FALSE}
+#The mixed effects model
+#model_NL <- glmer(ACC ~ PairCode * c_Trial + CRESP + ExperimentName + (c_Trial + CRESP | #SubjectID) + (1|ExperimentName/List2), 
+#                  data = fam, family = binomial, 
+#                  control = glmerControl(optimizer = "bobyqa", 
+#                                         optCtrl=list(maxfun=2e6)))
+#First model is singular.
+#Uncorrelated slopes does not change singularity; next removed CRESP, then both Trial and #CRESP; next took out the random intercepts for List and Experiment, but added slopes back to #participant random effect; again uncorrelated slopes; removed CRESP 
+
+model_NL <- glmer(ACC ~ PairCode * c_Trial + CRESP + ExperimentName + (c_Trial | SubjectID), 
+                  data = fam, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", 
+                                         optCtrl=list(maxfun=2e6)))
+
+#Create table for model results
+cc <- confint(model_NL, parm = "beta_", method = "Wald")  
+p <- format.pval(round(summary(model_NL)$coefficients[,4], digits = 2), eps = .001)
+ctab <- cbind(est = round(fixef(model_NL), digits = 2), cc)
+rtab <- exp(ctab)
+rtab <- cbind(rtab, p)
+`Fixed Effect` <- c("Intercept",
+                    "Word vs Initial FW",
+                    "Word vs Medial FW",
+                    "Word vs Final FW",
+                    "PW vs Initial FW",
+                    "PW vs Medial FW",
+                    "PW vs Final FW",
+                    "Trial",
+                    "Target Location [2]",
+                    "Language condition [2]",
+                    "Trial x Word vs Initial FW",
+                    "Trial x Word vs Medial FW",
+                    "Trial x Word vs Final FW",
+                    "Trial x PW vs Initial FW",
+                    "Trial x PW vs Medial FW",
+                    "Trial x PW vs Final FW")
+
+rtab <- cbind(rtab, `Fixed Effect`)
+rtab <- as.data.frame(rtab)
+
+rtab <- rtab[c(1:7,9:10,8,11:16),c(5,1:4)]
+
+rtab <- 
+  rtab %>% 
+  mutate(est = round(as.numeric(as.character(est)),digits = 2),
+         `2.5 %` = round(as.numeric(as.character(`2.5 %`)),digits = 2),
+         `97.5 %` = round(as.numeric(as.character(`97.5 %`)),digits = 2))%>% 
+  rename(`Odds Ratio` = est,
+         `Lower 95% CI` = `2.5 %`,
+         `Upper 95% CI` = `97.5 %`,
+         `p value` = p) 
+
+#Follow-up comparisons
+model_NL_mcp <- glht(model_NL, linfct=mcp(PairCode = "Tukey"))
+
+#Creating a table for the comparisons
+contrastsNL <- as.data.frame(table_glht(model_NL_mcp))
+contrastsNL <- cbind(rownames(contrastsNL), data.frame(contrastsNL, row.names=NULL))
+contrastsNL_sig <- subset(contrastsNL, Pr...z.. < .05) 
+contrastsNL_sig <- contrastsNL_sig %>% 
+  separate("rownames(contrastsNL)", c("`Contrast trial type`", "`Trial type`"), sep = " - ") %>%
+  dplyr::select(c("`Trial type`", "`Contrast trial type`":"Pr...z.."), 
+                `Mean difference` = Estimate,
+                `Std. error` = Std..Error,
+                `p value` = Pr...z..)
+`Trial type` <- c("Word vs PW",
+                  "~",
+                  "~",
+                  "Word vs In FW",
+                  "~",
+                  "~",
+                  "Word vs Med FW",
+                  "~",
+                  "~",
+                  "Word vs Fin FW",
+                  "~")
+
+contrastsNL_sig <- dplyr::select(contrastsNL_sig, c("`Contrast trial type`":"p value"))
+contrastsNL_sig <- cbind(`Trial type`, contrastsNL_sig)
+round(contrastsNL_sig$`p value`, digits = 3) -> contrastsNL_sig$`p value`
+contrastsNL_sig$`p value` <- format.pval(contrastsNL_sig$`p value`, eps = .001)
+```
+
+```{r Fam Corr, include = FALSE}
+##Correlation script
+#Create dataframe averages
+fam_wide <- WideDF(fam)
+
+##check normality
+#shapiro.test(fam_wide$"Word vs PW")
+#shapiro.test(fam_wide$"Word vs Initial FW")
+#shapiro.test(fam_wide$"Word vs Medial FW")
+#shapiro.test(fam_wide$"Word vs Final FW")
+#shapiro.test(fam_wide$"PW vs Initial FW")
+#shapiro.test(fam_wide$"PW vs Medial FW")
+#shapiro.test(fam_wide$"PW vs Final FW")
+
+cors <- rcorr(as.matrix(fam_wide[,c(2:8)]), type = "spearman")
+M <- cors$r
+p_mat <- cors$P
+
+col <- colorRampPalette(c("darkblue", "white", "darkred"))(20)
+```
+
+```{r Fam RT, include = FALSE}
+fam_RT <-
+  fam %>% 
+  filter(SubjectID != "Base_Test2_122",
+         RT < 5001,
+         RT > 0)
+
+#model_NL_RT <- lmer(RT ~ PairCode * c_Trial + CRESP + ExperimentName + (c_Trial + CRESP | #SubjectID) + (1 | ExperimentName/List2), data = fam_RT)
+#Fails to converge
+#Same as above: 
+model_NL_RT <- lmer(RT ~ PairCode * c_Trial + CRESP + ExperimentName + (1 | SubjectID) + (1 | ExperimentName/List2), data = fam_RT)
+                                                                          
+model_NL_RT_mcp <- glht(model_NL_RT, linfct=mcp(PairCode = "Tukey"))
+
+contrastsNL_RT <- table_glht(model_NL_RT_mcp)
+x <- coef(summary(model_NL_RT))
+
+fam_RT$PairCode_PWMedFW <- relevel(fam_RT$PairCode, ref = "PW vs Med FW")
+
+#model_NL_RT2 <- lmer(RT ~ PairCode_PWMedFW * c_Trial + CRESP + ExperimentName + (1 | #SubjectID) + (1 | ExperimentName/List2), data = fam_RT)
+#Singular
+
+model_NL_RT2 <- lmer(RT ~ PairCode_PWMedFW * c_Trial + CRESP + ExperimentName + (c_Trial + CRESP | SubjectID), data = fam_RT)
+```
+
+This analysis reveals no significant effect of trial, and no significant interactions between trial and contrast types. Full model results are presented in Table 2. We ran follow-up pairwise comparisons of each trial type against every other trial type (*p*-values adjusted using Tukey's HSD) using the package multcomp (Hothorn, et al., 2008). Partwords versus initial- and final-fake-words significantly differed from all other trial types, which is reflected in Table 3. No other trial types significantly differed (full model comparisons are reported in Table B1 of Appendix B).  
+
+
+```{r results="asis", echo = FALSE, include = TRUE}
+apa_table(rtab,
+          caption = "Mixed effects model results Experiment 1")
+```
+
+```{r results="asis", echo = FALSE, include = TRUE}
+apa_table(contrastsNL_sig,
+          caption = "Multiple comparisons of mixed effects model results, Experiment 1 (only p < .05 reported)",
+          row.names = FALSE)
+```
+
+Reaction times were analyzed in the same fashion. Raw means and standard deviations can be found in Table B2 in Appendix B. The mixed effects model reveals a significant main effect of trial, indicating that reaction times decreased in the word versus part-word condition over the course of the task (B = -5.91, *p* = .02). The estimates for all other trial type by trial interactions were positive, suggesting that the largest decrease in RT occurred in the word versus part-word trial. The interaction of trial with part-word versus medial fake-word trials was significant (B = 7.01, *p* = .04). We ran the same model with part-word versus medial-fake-word trials as reference, to investigate whether this estimate suggested that participants in fact slowed down in this condition over the course of the experiment; however, the results reveal that participants' rate of response did not significantly change on part-word versus medial fake-word trials (B = 1.10, *p* = .67). In other words, there is positive evidence for decreasing reaction times in word versus part-word trials, and no evidence for differential change in any other condition (full model results reported in Table 4). Follow-up comparisons revealed no significant differences in mean RT between trial types (Table B3 in Appendix B).   
+
+```{r}
+x <- coef(summary(model_NL_RT))
+`Fixed Effect` <- c("Intercept",
+                    "Word vs Initial FW",
+                    "Word vs Medial FW",
+                    "Word vs Final FW",
+                    "PW vs Initial FW",
+                    "PW vs Medial FW",
+                    "PW vs Final FW",
+                    "Trial",
+                    "Language",
+                    "Target Location [2]",
+                    "Trial x Word vs Initial FW",
+                    "Trial x Word vs Medial FW",
+                    "Trial x Word vs Final FW",
+                    "Trial x PW vs Initial FW",
+                    "Trial x PW vs Medial FW",
+                    "Trial x PW vs Final FW")
+
+x <- cbind(x, `Fixed Effect`)
+rownames(x) <- NULL
+x <- x[,c(6,1:5)]
+x <- as.data.frame(x)
+x <- 
+  x %>% 
+  mutate(`Pr(>|t|)` = format.pval(round(as.numeric(as.character(`Pr(>|t|)`)), digits = 2), eps = .001),
+         Estimate = round(as.numeric(as.character(Estimate)),digits = 2),
+         `t value` = round(as.numeric(as.character(`t value`)),digits = 2),
+         `Std. Error` = round(as.numeric(as.character(`Std. Error`)),digits = 2),
+         df = round(as.numeric(as.character(df)),digits = 2)) %>% 
+  rename(`p value` = `Pr(>|t|)`)
+```
+
+```{r results="asis", echo = FALSE, include = TRUE}
+apa_table(x,
+          caption = "Mixed effects model results predicting RT, Experiment 1")
+```
+
+Finally, we examined the relationship between performance on the different trial types. In general, we expect positive correlations across all trial types if learning is driven by TPs, but negative correlations (specifically between word versus part-word and part-word versus fake-word trials) if learning involves position-based encoding. The distributions in most contrast types were found to be non-normal by Shapiro-Wilk tests (exceptions included Word versus Final FW and Part-word versus Final Fake-word trials); therefore, spearman correlations were run in place of pearson's. Correlations across the dataset are overall very low/zero. There are two significant positive associations (word versus part-word to word versus final fake-word trials: *rs*(40) = 0.34, *p* = .03, and part-word versus medial to part-word versus final fake-word trials: *rs*(40) = 0.33, *p* = .04). There is also one negative correlation (word versus part-word to part-word versus final fake-word trials: *rs*(40) = -0.4, *p* = .009). Scatterplots of the significant relationships as well as the full correlation matrix can be found in Figure 5.  
+
+```{r Fig5}
+cor1 <- ggplot(fam_wide, aes(x = `Word vs PW`, y = `Word vs Fin FW`)) + geom_jitter() + scale_y_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + scale_x_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + geom_smooth(method = "lm") + geom_hline(yintercept = .5, lty =3) + geom_vline(xintercept = .5, lty = 3) + theme_manuscript + theme(plot.margin = margin(10, 1, 1, 1))
+
+cor2 <- ggplot(fam_wide, aes(x = `Word vs PW`, y = `PW vs Fin FW`)) + geom_jitter() + scale_y_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + scale_x_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + geom_smooth(method = "lm") + geom_hline(yintercept = .5, lty =3) + geom_vline(xintercept = .5, lty = 3) + theme_manuscript + theme(plot.margin = margin(10, 1, 1, 1))
+
+cor3 <- ggplot(fam_wide, aes(x = `PW vs Med FW`, y = `PW vs Fin FW`)) + geom_jitter() + scale_y_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + scale_x_continuous(breaks = c(0.25, 0.50, 0.75, 1.0)) + geom_smooth(method = "lm") + geom_hline(yintercept = .5, lty =3) + geom_vline(xintercept = .5, lty = 3) + theme_manuscript + theme(plot.margin = margin(10, 1, 1, 1))
+
+corMatrix = ggcorrplot(M, type = "lower", lab = TRUE) + theme_manuscript + 
+  annotate("text", y = c(1.325, 1.325, 6.325), x = c(3, 6, 6), label = c("A*", "B**", "C*"), fontface = 2) + theme(axis.text.y = element_text(colour = "black"))
+
+plot5 <- cowplot::plot_grid(cor1, cor2, cor3, labels = c("A", "B", "C"), label_fontfamily = "Times", ncol = 3, hjust = .1)
+
+p5 <- cowplot::plot_grid(plot5, corMatrix, rel_heights = c(1, 2.5), ncol = 1)
+```
+
+```{r fig.height=8, out.width = "\\textwidth", fig.pos = "!h", fig.pos = "!h", fig.cap="Correlations Experiment 1"}
+p5
+```
+
+#Discussion
+In this experiment, learners were familiarized to a 2-minute continuous stream of syllables that was characterized by transitional probabilities of either 1.0 or 0.33 between syllables. We probed whether the output representations that emerged from this exposure consisted of purely TP associations between syllables, or the positional constraints of syllables within a (high-TP) trisyllabic word.   
+Performance reveals that learners successfully detected the underlying structure of the stream, as indicated by above chance performance on trials that pitted words against both part-word and fake-word foils. We hypothesized that if learners are driven solely by TPs, we should find greatest success on trials pitting words against medial syllable fake-words (comprised of 0.0 adjacent TPs), followed by words versus initial/final syllable fake-words (one 0.0 adjacent TP, one 1.0), and lastly by word versus part-words (one 0.33 TP, one 1.0). If, on the other hand, learners extract position-based representations, then (certain) fake-words - despite their lower TPs - may appear more word-like, leading to better performance on word versus part-word trials as compared to (certain) word versus fake-word trials. Neither prediction was clearly met: performance was statistically equivalent across syllable positions and word versus part-word trials. This pattern was paralleled in the reaction time data - none of the trial types significantly differed from one another.  
+Participants were also asked to choose between part-words and fake-words. In these trials, neither choice reflects the optimal TP structure of the exposure stream; however, we hypothesized that if representations are characterized by TPs, learners should prefer part-words, but that, alternatively, positional representations would lead to a preference for fake-words. Again, the data do not clearly embody either of these two predictions: performance was at chance across all three syllable positions, and the syllable manipulations did not statistically differ from one another. Performance on these contrasts, however, was not entirely isomorphic. Comparisons of the various trial types against each other revealed that most of the contrasts did not significantly differ, except for contrasts pitting part-words against edge-manipulated fake-words, which significantly differed from all other conditions. This, in combination with the fact that performance on part-word versus fake-word trials did not significantly differ from chance across any of the three syllable positions, suggests that participants' experience of both part-word and fake-word foils was markedly different from their experience of the high-TP word trisyllables. Numerically, it appears that participants preferred the edge-manipulated fake-words, but preferred part-words when the fake-word consisted of two non-adjacent TPs. It thus may be that participants have encoded some positional information and are recruiting this cue when the adjacent relations have not been entirely broken; indeed, as was also predicted by the position-encoding account, participants performed better (numerically) on word versus part-word trials than word versus (edge-manipulated) fake-word trials. On the other hand, these numerical patterns might just as easily be noise. The strongest evidence, then, is the fact that part-word versus edge-manipulated fake-words differ from all other conditions. This fact alone, however, is not  consistent with the position-encoding hypothesis alone. Under the TP-encoding account, these should also be the most difficult contrasts to discriminate (i.e., because the difference in TPs is very narrow, for example [1.0, 0.33] vs [1.0, 0]).  
+Finally, we also examined correlations between the trial types. While correlations were generally non-existent, the three significant patterns in the data are consistent with the position-encoding hypothesis. Specifically, better segmentation performance, as indexed by performance on word versus part-word trials, correlated with a stronger preference for final-syllable fake-words over part-words. Moreover, performance on part-word versus initial and final fake-word trials was positively correlated, suggesting that learners who preferred positionally sensitive fake-words were driven by this information from both the right and left edges. We note, however, that this too must be interpreted with caution; correlations in small samples are notoriously unstable (Schonbrodt & Perugini, 2013), and the internal validity of the 2AFC task in SL studies, which this study was modelled upon, is also low (Siegelman, Bogaerts, & Frost, 2017).  
+In sum, the results of the present experiment are consistent with both TP-encoding and position-encoding hypotheses. To the extent that they support the latter, however, they suggest that if position-encoding exists, it is a very small effect, perhaps too small to be reliably detected under the experimental conditions of previous studies that have looked for it, such as Endress and Mehler (2009b). In Experiments 2a and b we examine the second part of our hypothesis, that stronger evidence for position-based effects may be revealed under conditions of reduced phonetic familiarity. To test this, we exposed adult learners to two new languages that were identical to Experiment 1 in form, but differed in terms of their relative acoustic familiarity to speakers of North American English. In Experiment 2a, participants were exposed to a language composed of sounds that exist in English, but which are either infrequent or contextually restricted allophonic variants and so are not prototypical English phones. We refer to this language as the Semi-English Language. In Experiment 2b the sounds in the exposure and test stimuli do not overlap with English phones or their allophonic variants; this exposure language was thus referred to as the Non-English Language. We predicted that the increased difficulty in efficiently perceiving and representing these sounds would lead to greater confusion with or preference for fake-words.  
